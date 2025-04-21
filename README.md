@@ -1,8 +1,4 @@
-## Nome do Projeto
 # PARAÍSO PET
-Sistema de agendamento de banhos para um petshop. O usuário pode marcar a data, horário, inserir a raça e a foto do seu cachorro.
-
----
 
 ## Integrantes do Grupo
 
@@ -37,7 +33,7 @@ Sistema de agendamento de banhos para um petshop. O usuário pode marcar a data,
             login.html
             styles.css
             site.css
-
+---
 
 ## ⚙ Instalação
 
