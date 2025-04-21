@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="senha" placeholder="Senha" required>
+  <div class="password-toggle" onclick="toggleSenha()">Mostrar/Esconder senha</div>
+  <button onclick="login()">Entrar</button>
+  <p>Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+</div>
+
+<script>
+function toggleSenha() {
+  const senha = document.getElementById("senha");
+  senha.type = senha.type === "password" ? "text" : "password";
+}
+
+async function login() {
+  const email = document.getElementById('email').value;
+  const senha = document.getElementById('senha').value;
+
+  const res = await fetch('http://localhost:3000/api/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ email, senha })
+  });
+
+  const data = await res.json();
+  if (data.token) {
+    localStorage.setItem('token', data.token);
+    window.location.href = 'agendamentos.html';
+  } else {
+    alert(data.mensagem);
+  }
+}
+</script>
+</body>
+</html>

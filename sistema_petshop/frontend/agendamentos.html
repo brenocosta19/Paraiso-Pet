@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agendamentos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+  <h2>Novo Agendamento</h2>
+  <form id="form-agendamento">
+    <input type="text" name="nome_pet" placeholder="Nome do pet" required>
+    <input type="text" name="raca" placeholder="Raça" required>
+    <input type="datetime-local" name="data_hora" required>
+    <textarea name="observacoes" placeholder="Observações"></textarea>
+    <input type="file" name="imagem" accept="image/*" required>
+    <button type="submit">Agendar</button>
+  </form>
+
+  <h2>Seus Agendamentos</h2>
+  <div id="lista-agendamentos"></div>
+</div>
+
+<script>
+document.getElementById('form-agendamento').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const token = localStorage.getItem('token');
+
+  const res = await fetch('http://localhost:3000/api/agendamentos', {
+    method: 'POST',
+    headers: { Authorization: token },
+    body: formData
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    alert('Agendamento realizado com sucesso!');
+    e.target.reset();
+    carregarAgendamentos();
+  } else {
+    alert(data.mensagem);
+  }
+});
+
+async function carregarAgendamentos() {
+  const token = localStorage.getItem('token');
+
+  const res = await fetch('http://localhost:3000/api/agendamentos', {
+    headers: { Authorization: token }
+  });
+
+  const agendamentos = await res.json();
+  const lista = document.getElementById('lista-agendamentos');
+  lista.innerHTML = '';
+
+  agendamentos.forEach(ag => {
+    lista.innerHTML += `
+      <div class="agendamento">
+        <strong>${ag.nome_pet}</strong> (${ag.raca})<br>
+        Data: ${new Date(ag.data_hora).toLocaleString()}<br>
+        Obs: ${ag.observacoes}<br>
+        <img src="http://localhost:3000/uploads/${ag.imagem}" alt="pet">
+      </div>
+    `;
+  });
+}
+
+carregarAgendamentos();
+</script>
+</body>
+</html>
