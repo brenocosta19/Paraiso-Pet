@@ -59,10 +59,35 @@ async function carregarAgendamentos() {
         <strong>${ag.nome_pet}</strong> (${ag.raca})<br>
         Data: ${new Date(ag.data_hora).toLocaleString()}<br>
         Obs: ${ag.observacoes}<br>
-        <img src="http://localhost:3000/uploads/${ag.imagem}" alt="pet">
+        <img src="http://localhost:3000/uploads/${ag.imagem}" alt="pet"><br>
+        <button onclick="cancelarAgendamento(${ag.id})">Cancelar</button>
       </div>
     `;
   });
+}
+
+async function cancelarAgendamento(id) {
+  const token = localStorage.getItem('token');
+  if (confirm('Deseja realmente cancelar este agendamento?')) {
+    try {
+      const res = await fetch(`http://localhost:3000/api/agendamentos/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: token
+        }
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.mensagem);
+        carregarAgendamentos(); // Atualiza a lista
+      } else {
+        alert(data.mensagem || 'Erro ao cancelar agendamento.');
+      }
+    } catch (err) {
+      alert('Erro ao se conectar com o servidor.');
+    }
+  }
 }
 
 carregarAgendamentos();
